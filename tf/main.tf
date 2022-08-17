@@ -21,7 +21,7 @@ module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "2.77.0"
 
-  name                 = "simongreen-vpc"
+  name                 = "<unique-name>-vpc"
   cidr                 = "10.0.0.0/16"
   azs                  = data.aws_availability_zones.available.names
   public_subnets       = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
@@ -29,8 +29,8 @@ module "vpc" {
   enable_dns_support   = true
 }
 
-resource "aws_db_subnet_group" "simongreen-sng" {
-  name       = "simongreen-sng"
+resource "aws_db_subnet_group" "<unique-name>-sng" {
+  name       = "<unique-name>-sng"
   subnet_ids = module.vpc.public_subnets
 
   tags = {
@@ -38,8 +38,8 @@ resource "aws_db_subnet_group" "simongreen-sng" {
   }
 }
 
-resource "aws_security_group" "simongreen-rds-sg" {
-  name   = "simongreen-rds-sg"
+resource "aws_security_group" "<unique-name>-rds-sg" {
+  name   = "<unique-name>-rds-sg"
   vpc_id = module.vpc.vpc_id
 
   ingress {
@@ -57,12 +57,12 @@ resource "aws_security_group" "simongreen-rds-sg" {
   }
 
   tags = {
-    Name = "simongreen-rds-sg"
+    Name = "<unique-name>-rds-sg"
   }
 }
 
-resource "aws_db_parameter_group" "simongreen-pg" {
-  name   = "simongreen-pg"
+resource "aws_db_parameter_group" "<unique-name>-pg" {
+  name   = "<unique-name>-pg"
   family = "postgres13"
 
   parameter {
@@ -71,17 +71,17 @@ resource "aws_db_parameter_group" "simongreen-pg" {
   }
 }
 
-resource "aws_db_instance" "simongreen-db-postgres" {
-  identifier             = "simongreen-db-postgres"
+resource "aws_db_instance" "<unique-name>-db-postgres" {
+  identifier             = "<unique-name>-db-postgres"
   instance_class         = "db.t3.micro"
   allocated_storage      = 20
   engine                 = "postgres"
   engine_version         = "13.4"
   username               = "postgres"
   password               = var.db_password
-  db_subnet_group_name   = aws_db_subnet_group.simongreen-sng.name
-  vpc_security_group_ids = [aws_security_group.simongreen-rds-sg.id]
-  parameter_group_name   = aws_db_parameter_group.simongreen-pg.name
+  db_subnet_group_name   = aws_db_subnet_group.<unique-name>-sng.name
+  vpc_security_group_ids = [aws_security_group.<unique-name>-rds-sg.id]
+  parameter_group_name   = aws_db_parameter_group.<unique-name>-pg.name
   publicly_accessible    = true
   skip_final_snapshot    = true
 }
@@ -90,10 +90,10 @@ resource "aws_instance" "app_server_cp" {
   ami                         = "${data.aws_ami.amazon-linux-2.id}"
   associate_public_ip_address = true
   instance_type               = "t2.micro"
-  key_name                    = "simon-green-uswest2"
+  key_name                    = "<ssh-key-pair-name>"
 
   tags = {
-    Name = "SimonGreen_CP_AmznLinux2"
+    Name = "<unique-name>_CP_AmznLinux2"
   }
 }
 
@@ -101,10 +101,10 @@ resource "aws_instance" "app_server_dp" {
   ami                         = "${data.aws_ami.amazon-linux-2.id}"
   associate_public_ip_address = true
   instance_type               = "t2.micro"
-  key_name                    = "simon-green-uswest2"
+  key_name                    = "<ssh-key-pair-name>"
 
   tags = {
-    Name = "SimonGreen_DP_AmznLinux2"
+    Name = "<unique-name>_DP_AmznLinux2"
   }
 }
 
