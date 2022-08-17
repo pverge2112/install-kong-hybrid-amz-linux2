@@ -11,6 +11,12 @@ This example stands up two Amazon Linux 2 instances and a single postres (RDS) i
 2. AWS Key Pair for SSH
 3. Terraform CLI
 
+## Default Ports
+
+Make sure to create inbound rules for these ports.
+
+![](images/ports.png "default ports")
+
 ## Procedure
 
 1. Via the CLI, login to AWS using `aws configure`.
